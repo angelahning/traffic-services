@@ -1,0 +1,88 @@
+chart:
+  name: app
+  version: v7.3.1
+configMap:
+  env:
+    DD_TRACE_DEBUG: "false"
+    DD_TRACE_STARTUP_LOGS: "false"
+    DISABLE_PROFILER: "1"
+    PORT: "8080"
+    PRODUCT_CATALOG_SERVICE_ADDR: exemplar-productcatalog-service-au-qa.ap-exemplar-productcatalog:8080
+deployment:
+  container:
+    healthChecks:
+      livenessProbe:
+        grpc:
+          port: 8080
+        periodSeconds: 5
+      readinessProbe:
+        grpc:
+          port: 8080
+        periodSeconds: 5
+    image: 361053881171.dkr.ecr.ap-southeast-2.amazonaws.com/k8s/pe/platform-exemplar
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: "1"
+        memory: 512Mi
+  datadog:
+    apm:
+      enabled: true
+    enabled: true
+    env: au-qa
+    logging:
+      enabled: true
+  replicaCount: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 1
+    type: RollingUpdate
+hpa:
+  behavior:
+    scaleDown:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 20
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 100
+      - periodSeconds: 15
+        type: Pods
+        value: 4
+      selectPolicy: Max
+      stabilizationWindowSeconds: 0
+  cpu: 80
+  enabled: true
+  maxReplicas: 5
+labels:
+  component: recommendation-service
+  deployment_method: Helm
+  lang: python
+  lang_version: unset
+  repo: platform-exemplar
+  runtime: unset
+  service_name: ap-exemplar-recommendation
+  singleton: false
+  team: kompute
+  team_slack_channel: kompute-support
+  tier: 3
+networkPolicy:
+  enabled: false
+ports:
+- name: grpc-app
+  port: 8080
+  protocol: TCP
+  targetPort: 8080
+service:
+  name: ""
+  tier: 3
+slug: ap-exemplar-recommendation
+version: recommendation-service.main.384
+virtualService:
+  enabled: false

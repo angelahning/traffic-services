@@ -1,0 +1,98 @@
+chart:
+  name: app
+  version: v7.3.1
+configMap:
+  env:
+    DD_TRACE_DEBUG: "true"
+    DD_TRACE_STARTUP_LOGS: "true"
+    REDIS_ADDR: master.pe-application-platform-demo-cart-servic.yrktsd.apse2.cache.amazonaws.com:6379,ssl=true
+deployment:
+  accessLogs:
+    enabled: false
+    envoyFilter: ""
+    logFormat: '[%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%
+      %PROTOCOL%" %RESPONSE_CODE% %RESPONSE_FLAGS% "%DYNAMIC_METADATA(istio.mixer:status)%"
+      "%UPSTREAM_TRANSPORT_FAILURE_REASON%" %BYTES_RECEIVED% %BYTES_SENT% %DURATION%
+      %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% "%REQ(X-FORWARDED-FOR)%" "%REQ(USER-AGENT)%"
+      "%REQ(X-REQUEST-ID)%" "%REQ(:AUTHORITY)%" "%UPSTREAM_HOST%" %UPSTREAM_CLUSTER%
+      %UPSTREAM_LOCAL_ADDRESS% %DOWNSTREAM_LOCAL_ADDRESS% %DOWNSTREAM_REMOTE_ADDRESS%
+      %REQUESTED_SERVER_NAME% %ROUTE_NAME%'
+  container:
+    healthChecks:
+      livenessProbe:
+        grpc:
+          port: 8080
+        initialDelaySeconds: 15
+        periodSeconds: 10
+      readinessProbe:
+        grpc:
+          port: 8080
+        initialDelaySeconds: 15
+    image: 361053881171.dkr.ecr.ap-southeast-2.amazonaws.com/k8s/pe/platform-exemplar
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: "1"
+        memory: 512Mi
+  datadog:
+    apm:
+      enabled: false
+      libVersion: v2.57.0-musl
+    enabled: true
+    env: au-qa
+    logging:
+      enabled: true
+  replicaCount: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 1
+    type: RollingUpdate
+hpa:
+  behavior:
+    scaleDown:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 20
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 100
+      - periodSeconds: 15
+        type: Pods
+        value: 4
+      selectPolicy: Max
+      stabilizationWindowSeconds: 0
+  cpu: 80
+  enabled: true
+  maxReplicas: 5
+labels:
+  component: cart-service
+  deployment_method: Helm
+  lang: dotnet
+  lang_version: unset
+  repo: platform-exemplar
+  runtime: unset
+  service_name: ap-exemplar-cart
+  singleton: false
+  team: kompute
+  team_slack_channel: kompute_support
+  tier: 3
+networkPolicy:
+  enabled: false
+ports:
+- name: grpc-app
+  port: 8080
+  protocol: TCP
+  targetPort: 8080
+service:
+  name: ""
+  tier: 3
+slug: ap-exemplar-cart
+version: cart-service.main.384
+virtualService:
+  enabled: false

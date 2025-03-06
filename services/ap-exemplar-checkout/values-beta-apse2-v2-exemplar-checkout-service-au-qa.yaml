@@ -1,0 +1,97 @@
+chart:
+  name: app
+  version: v7.3.1
+configMap:
+  env:
+    CART_SERVICE_ADDR: exemplar-cart-service-au-qa.ap-exemplar-cart:8080
+    CURRENCY_SERVICE_ADDR: exemplar-currency-service-au-qa.ap-exemplar-currency:8080
+    DD_TRACE_DEBUG: "false"
+    DD_TRACE_STARTUP_LOGS: "false"
+    EMAIL_SERVICE_ADDR: exemplar-email-service-au-qa.ap-exemplar-email:8080
+    ENABLE_PROFILER: "0"
+    ENABLE_TRACING: "1"
+    PAYMENT_SERVICE_ADDR: exemplar-payment-service-au-qa.ap-exemplar-payment:8080
+    PORT: "8080"
+    PRODUCT_CATALOG_SERVICE_ADDR: exemplar-productcatalog-service-au-qa.ap-exemplar-productcatalog:8080
+    SHIPPING_SERVICE_ADDR: exemplar-shipping-service-au-qa.ap-exemplar-shipping:8080
+deployment:
+  container:
+    healthChecks:
+      livenessProbe:
+        grpc:
+          port: 8080
+      readinessProbe:
+        grpc:
+          port: 8080
+    image: 361053881171.dkr.ecr.ap-southeast-2.amazonaws.com/k8s/pe/platform-exemplar
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: "1"
+        memory: 512Mi
+  datadog:
+    apm:
+      enabled: false
+    enabled: true
+    env: au-qa
+    logging:
+      enabled: true
+  replicaCount: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 1
+    type: RollingUpdate
+  terminationGracePeriodSeconds: 30
+hpa:
+  behavior:
+    scaleDown:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 20
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      policies:
+      - periodSeconds: 15
+        type: Percent
+        value: 100
+      - periodSeconds: 15
+        type: Pods
+        value: 4
+      selectPolicy: Max
+      stabilizationWindowSeconds: 0
+  cpu: 80
+  enabled: true
+  maxReplicas: 5
+labels:
+  admission.datadoghq.com/enabled: "true"
+  component: checkout-service
+  deployment_method: Helm
+  lang: go
+  lang_version: unset
+  repo: platform-exemplar
+  runtime: unset
+  service_name: ap-exemplar-checkout
+  singleton: false
+  team: kompute
+  team_slack_channel: unset
+  tier: 3
+networkPolicy:
+  enabled: false
+podDisruptionBudget:
+  enabled: true
+  spec:
+    maxUnavailable: 1
+ports:
+- name: grpc-app
+  port: 8080
+  targetPort: 8080
+service:
+  name: ""
+  tier: 3
+slug: ap-exemplar-checkout
+version: checkout-service.main.384
+virtualService:
+  enabled: false
