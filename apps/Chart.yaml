@@ -22,9 +22,9 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 appVersion: "1.0"
 
-dependencies:
-  - name: cash-service-traffic
-    version: "1.5.0"
-    alias: cashServiceTraffic
-    repository: oci://874923495733.dkr.ecr.us-west-2.amazonaws.com/helm
-    condition: cashServiceTraffic.enabled
+#dependencies:
+#  - name: cash-service-traffic
+#    version: "1.5.0"
+#    alias: cashServiceTraffic
+#    repository: oci://874923495733.dkr.ecr.us-west-2.amazonaws.com/helm
+#    condition: cashServiceTraffic.enabled
