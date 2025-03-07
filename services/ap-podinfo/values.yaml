@@ -19,10 +19,5 @@ deployment:
           path: /readyz
           port: 8080
         initialDelaySeconds: 5
-
-virtualService:
-  enabled: true
-  fqdn: 
-    - demo-aning.training.au.platform.afterpay-beta.com
-istioSidecar:
-  enabled: true
+# istioSidecar:
+#   enabled: true
