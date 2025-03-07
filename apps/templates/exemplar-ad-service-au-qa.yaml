@@ -24,7 +24,7 @@ spec:
     targetRevision: v7.3.1
   - ref: valuesRepo
     repoURL: https://github.com/angelahning/traffic-services
-    targetRevision: main
+    targetRevision: shulin/test
   syncPolicy:
     automated:
       prune: true
