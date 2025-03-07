@@ -1,0 +1,26 @@
+chart:
+  name: app
+  version: v7.3.1
+deployment:
+  replicaCount: 2
+  container:
+    image: 361053881171.dkr.ecr.ap-southeast-2.amazonaws.com/platform/podinfo
+    env:
+      - name: PODINFO_PORT
+        value: "8080"
+    healthChecks:
+      readinessProbe:
+        httpGet:
+          path: /healthz
+          port: 8080
+        initialDelaySeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /readyz
+          port: 8080
+        initialDelaySeconds: 5
+
+virtualService:
+  enabled: true
+  fqdn: 
+    - demo-aning.training.au.platform.afterpay-beta.com
