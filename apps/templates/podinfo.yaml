@@ -11,7 +11,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: istio-system
+    namespace: pe
     server: https://kubernetes.default.svc
   project: default
   sources:
