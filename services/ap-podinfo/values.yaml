@@ -24,3 +24,5 @@ virtualService:
   enabled: true
   fqdn: 
     - demo-aning.training.au.platform.afterpay-beta.com
+istioSidecar:
+  enabled: true
