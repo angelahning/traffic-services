@@ -26,15 +26,6 @@ spec:
     repoURL: https://github.com/angelahning/traffic-services
     targetRevision: shulin/test
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    retry:
-      backoff:
-        duration: 30m
-        factor: 1
-        maxDuration: 30m
-      limit: 3
     syncOptions:
     - Validate=true
     - PrunePropagationPolicy=foreground
