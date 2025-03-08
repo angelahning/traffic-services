@@ -14,17 +14,14 @@ spec:
     namespace: ap-exemplar-ad
     server: https://kubernetes.default.svc
   project: default
-  sources:
-  - chart: app
-    helm:
-      releaseName: exemplar-ad-service-au-qa
-      valueFiles:
-      - $valuesRepo/services/shulin-exemplar/historical-ap-values.yaml
-    repoURL: http://chartmuseum:8080
-    targetRevision: v7.3.1
-  - ref: valuesRepo
-    repoURL: https://github.com/angelahning/traffic-services
+  source:
+    repoURL: https://github.com/angelahning/traffic-services.git
     targetRevision: shulin/test
+    path: charts/service-chart
+    helm:
+      valueFiles:
+        - $valuesRepo/services/shulin-exemplar/historical-ap-values.yaml
+      releaseName: shulin-exemplar
   syncPolicy:
     syncOptions:
     - Validate=true
