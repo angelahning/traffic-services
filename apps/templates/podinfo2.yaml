@@ -11,7 +11,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: pe
+    namespace: ap-tf-exemplar2
     server: https://kubernetes.default.svc
   project: default
   sources:
